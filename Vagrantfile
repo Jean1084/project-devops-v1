@@ -14,6 +14,7 @@ VM_MEMORY      = 4096
 VM_CPUS        = 4
 INSTALL_SCRIPT = "install_tools.sh"
 GITHUB_SSH_SCRIPT = "../add_github_ssh.sh"
+SETUP_PROJECT_SCRIPT = "setup_project.sh"
 
 Vagrant.configure("2") do |config|
   config.vm.box = BOX_NAME
@@ -39,4 +40,7 @@ Vagrant.configure("2") do |config|
 
   # Provisioning : Ajout de la clé SSH pour GitHub
   config.vm.provision :shell, path: GITHUB_SSH_SCRIPT
+
+  # Provisioning : Setup project in vm
+  config.vm.provision :shell, path: SETUP_PROJECT_SCRIPT
 end
