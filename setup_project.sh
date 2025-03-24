@@ -17,7 +17,8 @@ cd "$WORKSPACE_DIR"
 # Cloner le dépôt
 if [ ! -d "$WORKSPACE_DIR/project-devops-v1" ]; then
     echo "git clone project in /home/vagrant/workspace"
-    sudo -u vagrant -H bash -c 'GIT_SSH_COMMAND="ssh -i /home/vagrant/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone git@github.com:Jean1084/project-devops-v1.git'
+  # sudo -u vagrant -H bash -c 'GIT_SSH_COMMAND="ssh -i /home/vagrant/.ssh/id_rsa -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" git clone git@github.com:Jean1084/project-devops-v1.git'
+    sudo -u vagrant -H bash -c 'GIT_SSH_COMMAND="ssh -i /home/vagrant/.ssh/id_rsa -o StrictHostKeyChecking=accept-new" git clone git@github.com:Jean1084/project-devops-v1.git'
     chown -R vagrant:vagrant "$WORKSPACE_DIR/project-devops-v1"
     chmod -R 700 "$WORKSPACE_DIR/project-devops-v1"
     echo "git clone done!"
