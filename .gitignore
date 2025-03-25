@@ -1,4 +1,4 @@
-
-.vagrant/
 .env
+.DS_Store
+.vagrant/
 

@@ -9,7 +9,7 @@ BOX_NAME       = "ubuntu/focal64"
 BOX_VERSION    = "20240821.0.1"
 VM_NAME        = "vm-workspace"
 VM_HOSTNAME    = "jean"
-VM_IP         = "192.168.56.10"
+VM_IP          = "192.168.56.10"
 VM_MEMORY      = 4096
 VM_CPUS        = 4
 INSTALL_SCRIPT = "install_tools.sh"
@@ -21,6 +21,12 @@ Vagrant.configure("2") do |config|
   config.vm.box_version = BOX_VERSION
   config.vm.network "private_network", type: "static", ip: VM_IP
   config.vm.hostname = VM_HOSTNAME
+
+  # Synchronisation du fichier .env via un lien symbolique
+  config.vm.synced_folder ".", "/home/vagrant/workspace", type: "virtualbox"
+  config.vm.provision "shell", inline: <<-SHELL
+    ln -sf /home/vagrant/workspace/.env /home/vagrant/.env
+  SHELL
 
   # Configuration du provider VirtualBox
   config.vm.provider "virtualbox" do |vb|
@@ -41,6 +47,9 @@ Vagrant.configure("2") do |config|
   # Provisioning : Ajout de la clé SSH pour GitHub
   config.vm.provision :shell, path: GITHUB_SSH_SCRIPT
 
-  # Provisioning : Setup project in vm
-  config.vm.provision :shell, path: SETUP_PROJECT_SCRIPT
+  # Provisioning : Setup project après le clonage Git
+  config.vm.provision :shell, inline: <<-SHELL
+    chmod +x /home/vagrant/workspace/project-devops-v1/setup_project.sh
+    /home/vagrant/workspace/project-devops-v1/setup_project.sh
+  SHELL, privileged: false
 end

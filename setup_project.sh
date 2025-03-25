@@ -29,18 +29,45 @@ else
     sudo -u vagrant -H git pull origin main
 fi
 
-# Change directory Dockerfile
-# cd "$WORKSPACE_DOCKER"
+# Charger les variables d'environnement
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+else
+    echo "Erreur : Fichier .env introuvable !"
+    exit 1
+fi
 
-# Create image
-# docker build -t simple-api-jean .
+echo "Vérification de Docker..."
+if ! docker info > /dev/null 2>&1; then
+    echo "Docker n'est pas en cours d'exécution ou l'utilisateur n'a pas les permissions"
+    exit 1
+fi
 
-# Connexion a Docker
-# echo "Connexion à Docker avec l'utilisateur : $DOCKER_USER"
-# echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin 
+# Nettoyage des anciennes images inutiles
+echo "Suppression des anciennes images..."
+docker rmi -f simple-api-jean || true
+docker image prune -f -a
 
-# Preparation de l'image
-# docker tag simple-api-jean jean1084/simple-api-jean:latest
+# Construction de l’image Docker
+cd "$WORKSPACE_DOCKER" || exit
+echo "Construction de l'image Docker..."
+docker build --no-cache -t simple-api-jean .
 
-# Envoi de l'image sur Docker hub
-# docker push jean1084/simple-api-jean:latest
+# Connexion à Docker Hub
+echo "Connexion à Docker Hub..."
+echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+
+# Vérification de l’authentification
+if [ $? -ne 0 ]; then
+    echo "Échec de la connexion à Docker Hub"
+    exit 1
+fi
+
+# Taguer et pousser l'image Docker
+echo "Préparation de l’image..."
+docker tag simple-api-jean "$DOCKER_USER/simple-api-jean:latest"
+
+echo "Envoi de l'image vers Docker Hub..."
+docker push "$DOCKER_USER/simple-api-jean:latest" &> /dev/null &  # Exécution en arrière-plan
+disown
+echo "L'envoi de l'image est en cours en arrière-plan..."
