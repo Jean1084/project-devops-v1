@@ -1,6 +1,6 @@
 version: '2'
 services:
-  web-pozos-jean:
+  web-simple-api-jean:
     images: php:apache
     depends_on:
       - api
@@ -12,16 +12,16 @@ services:
       - USERNAME=jean
       - PASSWORD=agree
     networks:
-      - api-pozos-jean
+      - simple-api-jean-networks
 
-  api-pozos-jean:
-    image: api-pozos-jean:1
+  simple-api-jean:
+    image: simple-api-jean:latest
     ports:
       - "4000:5000"
     volumes:
       - ./simple_api/student_age.json:/data/student_age.json
     networks:
-      - api-pozos-jean
+      - simple-api-jean-networks
 
 networks:
-  api-pozos-jean:  
+  simple-api-jean-networks:
