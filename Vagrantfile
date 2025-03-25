@@ -48,8 +48,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, path: GITHUB_SSH_SCRIPT
 
   # Provisioning : Setup project après le clonage Git
-  config.vm.provision :shell, inline: <<-SHELL
+  # Provisioning : Setup project après le clonage Git
+  config.vm.provision :shell, inline: <<-SHELL, privileged: false
     chmod +x /home/vagrant/workspace/project-devops-v1/setup_project.sh
     /home/vagrant/workspace/project-devops-v1/setup_project.sh
-  SHELL, privileged: false
+  SHELL
 end
