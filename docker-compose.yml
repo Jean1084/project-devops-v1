@@ -12,7 +12,7 @@ services:
       - USERNAME=jean
       - PASSWORD=agree
     networks:
-      - simple-api-jean-networks
+      - simple-api-network
 
   simple-api-jean:
     image: simple-api-jean:latest
@@ -21,7 +21,7 @@ services:
     volumes:
       - ./simple_api/student_age.json:/data/student_age.json
     networks:
-      - simple-api-jean-networks
+      - simple-api-network
 
 networks:
-  simple-api-jean-networks:
+  simple-api-network:
