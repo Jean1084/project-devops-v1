@@ -44,19 +44,18 @@ Vagrant.configure("2") do |config|
     shell.env = { 'ENABLE_ZSH' => ENV['ENABLE_ZSH'] || "false" }
   end
 
-  # Provisioning : Ajout de la clé SSH pour GitHub
-  config.vm.provision :shell, path: GITHUB_SSH_SCRIPT
-
   # Vérification et installation de Docker si nécessaire
   config.vm.provision "shell", inline: <<-SHELL
-    echo "Installation et vérification de Docker..."
-  
-  # Installer Docker s'il n'est pas déjà installé
-    if ! command -v docker &> /dev/null; then
-      echo "Docker non trouvé, installation en cours..."
-      curl -fsSL https://get.docker.com | sh
+    echo "Nettoyer les paquets inutiles pour libérer de l'espace..."
+    sudo apt-get autoremove -y
+    sudo apt-get clean
+
+    # Charger les variables d'environnement
+    if [ -f .env ]; then
+      export $(grep -v '^#' .env | xargs)
     else
-      echo "Docker est déjà installé."
+      echo "Erreur : Fichier .env introuvable !"
+      exit 1
     fi
 
   # Activer et redémarrer Docker
@@ -76,11 +75,10 @@ Vagrant.configure("2") do |config|
     echo "Redémarrage du shell pour appliquer les permissions..."
     newgrp docker
   SHELL
-
+  
+  # Provisioning : Ajout de la clé SSH pour GitHub
+  config.vm.provision :shell, path: GITHUB_SSH_SCRIPT
 
   # Provisioning : Setup project après le clonage Git
-  config.vm.provision :shell, inline: <<-SHELL, privileged: false
-    chmod +x /home/vagrant/workspace/setup_project.sh
-    /home/vagrant/workspace/setup_project.sh
-  SHELL
+  config.vm.provision :shell, path: SETUP_PROJECT_SCRIPT
 end

@@ -1,9 +1,17 @@
 #!/bin/bash
+source .env
+
+# Charger les variables d'environnement
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+else
+    echo "Erreur : Fichier .env introuvable !"
+    exit 1
+fi
 
 WORKSPACE_PROJECT="/home/vagrant/workspace"
 SSH_KEY_PATH="/home/vagrant/.ssh/id_rsa"
 WORKSPACE_DOCKER="/home/vagrant/workspace/simple_api"
-source .env
 
 echo "Starting SSH agent..."
 eval "$(ssh-agent -s)" || { echo "Failed to start ssh-agent"; exit 1; }
@@ -26,14 +34,6 @@ else
     echo "Project already exists, pulling latest changes..."
     cd "$WORKSPACE_PROJECT"
     sudo -u vagrant -H git pull origin main
-fi
-
-# Charger les variables d'environnement
-if [ -f .env ]; then
-    export $(grep -v '^#' .env | xargs)
-else
-    echo "Erreur : Fichier .env introuvable !"
-    exit 1
 fi
 
 echo "Démarrage de Docker..."
@@ -67,7 +67,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Taguer et pousser l'image Docker
-echo "Préparation de l’image..."
+echo "Préparation de l'image..."
 docker tag simple-api-jean "$DOCKER_USER/simple-api-jean:latest"
 
 echo "Envoi de l'image vers Docker Hub..."

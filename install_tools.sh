@@ -61,11 +61,3 @@ ss -tnlp | grep ssh
 # Affichage de l'adresse IP
 IP_ADDRESS=$(ip -f inet addr show enp0s8 | sed -En -e 's/.*inet ([0-9.]+).*/\1/p')
 echo "Pour cette stack, vous utiliserez l'adresse IP : $IP_ADDRESS"
-
-# Vérifier et appliquer immédiatement les permissions Docker
-sudo usermod -aG docker vagrant
-newgrp docker
-
-# Nettoyer les paquets inutiles pour libérer de l'espace
-sudo apt-get autoremove -y
-sudo apt-get clean
