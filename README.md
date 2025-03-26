@@ -2,6 +2,8 @@
 
 # Project DevOps V1 
 
+## Vagrant 2.4.1 - VirtualBox 7.0.16 - Ubuntu/focal64 (Vagrant Box)  
+
 <img src="img/tools-use.PNG" width="350" height="580">
 
 #
