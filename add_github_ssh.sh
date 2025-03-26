@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# CONFIGUREZ ICI VOTRE TOKEN GITHUB ET VOTRE UTILISATEUR
-GITHUB_USER="Jean1084"
-GITHUB_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+source .env
 
 # Chemin de la clé SSH
 SSH_DIR="/home/vagrant/.ssh"
@@ -66,10 +64,6 @@ fi
 # Vérifier que la clé SSH est bien ajoutée à l'agent SSH
 eval "$(ssh-agent -s)"
 ssh-add "$SSH_KEY_PATH"
-
-# Tester la connexion avec GitHub
-# echo "Test de connexion à GitHub..."
-# ssh -o StrictHostKeyChecking=accept-new -i "$SSH_KEY_PATH" -T git@github.com -v || true
 
 echo "Test de connexion à GitHub..."
 if ssh -o StrictHostKeyChecking=accept-new -i "$SSH_KEY_PATH" -T git@github.com -v 2>&1 | grep -q "successfully authenticated"; then

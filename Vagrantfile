@@ -13,7 +13,7 @@ VM_IP          = "192.168.56.10"
 VM_MEMORY      = 4096
 VM_CPUS        = 4
 INSTALL_SCRIPT = "install_tools.sh"
-GITHUB_SSH_SCRIPT = "../add_github_ssh.sh"
+GITHUB_SSH_SCRIPT = "add_github_ssh.sh"
 SETUP_PROJECT_SCRIPT = "setup_project.sh"
 
 Vagrant.configure("2") do |config|
@@ -47,10 +47,40 @@ Vagrant.configure("2") do |config|
   # Provisioning : Ajout de la clé SSH pour GitHub
   config.vm.provision :shell, path: GITHUB_SSH_SCRIPT
 
-  # Provisioning : Setup project après le clonage Git
+  # Vérification et installation de Docker si nécessaire
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "Installation et vérification de Docker..."
+  
+  # Installer Docker s'il n'est pas déjà installé
+    if ! command -v docker &> /dev/null; then
+      echo "Docker non trouvé, installation en cours..."
+      curl -fsSL https://get.docker.com | sh
+    else
+      echo "Docker est déjà installé."
+    fi
+
+  # Activer et redémarrer Docker
+    echo "Activation et démarrage du service Docker..."
+    sudo systemctl enable docker
+    sudo systemctl restart docker
+
+  # Vérifier si Docker est actif
+    if ! systemctl is-active --quiet docker; then
+      echo "ERREUR : Docker ne démarre pas correctement !"
+      exit 1
+    fi
+
+  # Ajouter vagrant au groupe docker
+    echo "Ajout de l'utilisateur vagrant au groupe docker..."
+    sudo usermod -aG docker vagrant
+    echo "Redémarrage du shell pour appliquer les permissions..."
+    newgrp docker
+  SHELL
+
+
   # Provisioning : Setup project après le clonage Git
   config.vm.provision :shell, inline: <<-SHELL, privileged: false
-    chmod +x /home/vagrant/workspace/project-devops-v1/setup_project.sh
-    /home/vagrant/workspace/project-devops-v1/setup_project.sh
+    chmod +x /home/vagrant/workspace/setup_project.sh
+    /home/vagrant/workspace/setup_project.sh
   SHELL
 end

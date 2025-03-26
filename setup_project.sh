@@ -1,9 +1,8 @@
 #!/bin/bash
 
-WORKSPACE_DIR="/home/vagrant/workspace"
-WORKSPACE_PROJECT="/home/vagrant/workspace/project-devops-v1"
+WORKSPACE_PROJECT="/home/vagrant/workspace"
 SSH_KEY_PATH="/home/vagrant/.ssh/id_rsa"
-WORKSPACE_DOCKER="/home/vagrant/workspace/project-devops-v1/simple_api"
+WORKSPACE_DOCKER="/home/vagrant/workspace/simple_api"
 source .env
 
 echo "Starting SSH agent..."
@@ -12,10 +11,10 @@ ssh-add "$SSH_KEY_PATH"
 sleep 2
 
 echo "Creating workspace folder..."
-mkdir -p "$WORKSPACE_DIR"
-chown vagrant:vagrant "$WORKSPACE_DIR"
-chmod 700 "$WORKSPACE_DIR"
-cd "$WORKSPACE_DIR"
+mkdir -p "$WORKSPACE_PROJECT"
+chown vagrant:vagrant "$WORKSPACE_PROJECT"
+chmod 700 "$WORKSPACE_PROJECT"
+cd "$WORKSPACE_PROJECT"
 
 if [ ! -d "$WORKSPACE_PROJECT/.git" ]; then
     echo "Cloning project into '$WORKSPACE_PROJECT'..."
@@ -36,6 +35,10 @@ else
     echo "Erreur : Fichier .env introuvable !"
     exit 1
 fi
+
+echo "Démarrage de Docker..."
+sudo systemctl start docker
+sudo systemctl enable docker
 
 echo "Vérification de Docker..."
 if ! docker info > /dev/null 2>&1; then
