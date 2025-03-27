@@ -67,19 +67,6 @@ cd "$WORKSPACE_DOCKER" || exit
 echo "Construction de l'image Docker - php-apache-jean..."
 docker build --no-cache -t php-apache-jean .
 sleep 2
-# Creation docker network 
-# echo "Creation docker network - simple-api-network"
-# docker network create php-apache-jean-network
-
-# Lancer le container de l'image simple-api-jean
-# echo "Lancer le container de l'image simple-api-jean"
-# docker run -d --network simple-api-network --name test-simple-api -v ${PWD}/student_age.json:/data/student_age.json -p 4000:5000 simple-api-jean:latest
-
-# Pour tester API
-# curl -u jean:agree -X GET http://127.0.0.1:4000/simple-jean/api/v1.0/get_student_ages
-
-# curl -u jean:agree -X GET http://localhost:4000/simple-jean/api/v1.0/get_student_ages
-
 
 # Connexion à Docker Hub
 echo "Connexion à Docker Hub..."

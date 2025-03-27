@@ -1,21 +1,6 @@
 version: '3.8'  # Utilisation d'une version plus récente
 
 services:
-  web-php-apache-jean:
-    image: php-apache-jean:latest  # Correction de 'images' en 'image'
-    depends_on:
-      simple-api-jean:
-        condition: service_healthy  # Assure que l'API est prête avant de démarrer
-    ports:
-      - "8082:80"
-    volumes:
-      - ./website/www:/var/www/html  # Monte tout le dossier au lieu d'un seul fichier
-    environment:
-      USERNAME: jean
-      PASSWORD: agree
-    networks:
-      - simple-api-network
-
   simple-api-jean:
     image: simple-api-jean:latest
     ports:
@@ -29,7 +14,21 @@ services:
       interval: 10s
       retries: 5
       start_period: 20s
+  web-php-apache-jean:
+    image: php-apache-jean:latest
+    depends_on:
+      simple-api-jean:
+        condition: service_healthy  # Assure que l'API est prête avant de démarrer
+    ports:
+      - "8082:80"
+    volumes:
+      - ./website/www:/var/www/html  # Monte tout le dossier au lieu d'un seul fichier
+    environment:
+      USERNAME: jean
+      PASSWORD: agree
+    networks:
+      - simple-api-network
 
 networks:
   simple-api-network:
-    driver: bridge
+    driver: bridge 
