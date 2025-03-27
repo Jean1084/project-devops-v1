@@ -11,7 +11,8 @@ fi
 
 WORKSPACE_PROJECT="/home/vagrant/workspace"
 SSH_KEY_PATH="/home/vagrant/.ssh/id_rsa"
-WORKSPACE_DOCKER="/home/vagrant/workspace/simple_api"
+DIR_DOCKER_SIMPLE_API="/home/vagrant/workspace/simple_api"
+DIR_DOCKER_WEB_API="/home/vagrant/workspace/website"
 
 echo "Starting SSH agent..."
 eval "$(ssh-agent -s)" || { echo "Failed to start ssh-agent"; exit 1; }
@@ -53,17 +54,13 @@ docker rmi -f php-apache-jean || true
 docker image prune -f -a
 
 # Construction de l’image Docker simple-api-jean
-cd "$WORKSPACE_DOCKER" || exit
+cd "$DIR_DOCKER_SIMPLE_API" || exit
 echo "Construction de l'image Docker - simple-api-jean..."
 docker build --no-cache -t simple-api-jean .
 sleep 2
 
-# Creation docker network 
-echo "Creation docker network - simple-api-network"
-docker network create simple-api-network
-
 # Construction de l’image Docker php-apache-jean
-cd "$WORKSPACE_DOCKER" || exit
+cd "$DIR_DOCKER_WEB_API" || exit
 echo "Construction de l'image Docker - php-apache-jean..."
 docker build --no-cache -t php-apache-jean .
 sleep 2
@@ -93,4 +90,12 @@ sleep 3
 echo "Envoi de l'image php-apache-jean vers Docker Hub..."
 docker push "$DOCKER_USER/php-apache-jean:latest" &> /dev/null &  # Exécution en arrière-plan
 disown
+
+docker rmi -f "$DOCKER_USER/simple-api-jean" || true
+docker rmi -f "$DOCKER_USER/php-apache-jean" || true
+docker image prune -f 
+
+cd "$WORKSPACE_PROJECT"
+docker-compose up -d --build
+
 echo "L'envoi des images simple-api-jean et php-apache-jean est en cours en arrière-plan..."
