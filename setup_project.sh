@@ -49,40 +49,61 @@ fi
 # Nettoyage des anciennes images inutiles
 echo "Suppression des anciennes images..."
 docker rmi -f simple-api-jean || true
+docker rmi -f php-apache-jean || true
 docker image prune -f -a
 
-# Construction de l’image Docker
+# Construction de l’image Docker simple-api-jean
 cd "$WORKSPACE_DOCKER" || exit
-echo "Construction de l'image Docker..."
+echo "Construction de l'image Docker - simple-api-jean..."
 docker build --no-cache -t simple-api-jean .
+sleep 2
 
 # Creation docker network 
 echo "Creation docker network - simple-api-network"
 docker network create simple-api-network
 
+# Construction de l’image Docker php-apache-jean
+cd "$WORKSPACE_DOCKER" || exit
+echo "Construction de l'image Docker - php-apache-jean..."
+docker build --no-cache -t php-apache-jean .
+sleep 2
+# Creation docker network 
+# echo "Creation docker network - simple-api-network"
+# docker network create php-apache-jean-network
+
 # Lancer le container de l'image simple-api-jean
-echo "Lancer le container de l'image simple-api-jean"
-docker run -d --network simple-api-network --name test-simple-api -v ${PWD}/student_age.json:/data/student_age.json -p 4000:5000 simple-api-jean:latest
+# echo "Lancer le container de l'image simple-api-jean"
+# docker run -d --network simple-api-network --name test-simple-api -v ${PWD}/student_age.json:/data/student_age.json -p 4000:5000 simple-api-jean:latest
 
 # Pour tester API
 # curl -u jean:agree -X GET http://127.0.0.1:4000/simple-jean/api/v1.0/get_student_ages
+
+# curl -u jean:agree -X GET http://localhost:4000/simple-jean/api/v1.0/get_student_ages
 
 
 # Connexion à Docker Hub
 echo "Connexion à Docker Hub..."
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-
+sleep 2
 # Vérification de l’authentification
 if [ $? -ne 0 ]; then
     echo "Échec de la connexion à Docker Hub"
     exit 1
 fi
-
-# Taguer et pousser l'image Docker
-echo "Préparation de l'image..."
+sleep 1
+# Taguer et pousser l'image Docker - simple-api-jean
+echo "Préparation de l'image - simple-api-jean pour Docker Hub..."
 docker tag simple-api-jean "$DOCKER_USER/simple-api-jean:latest"
-
-echo "Envoi de l'image vers Docker Hub..."
+sleep 3
+echo "Envoi de l'image simple-api-jean vers Docker Hub..."
 docker push "$DOCKER_USER/simple-api-jean:latest" &> /dev/null &  # Exécution en arrière-plan
+sleep 5
+
+# Taguer et pousser l'image Docker - php-apache-jean
+echo "Préparation de l'image - php-apache-jean pour Docker Hub..."
+docker tag php-apache-jean "$DOCKER_USER/php-apache-jean:latest"
+sleep 3
+echo "Envoi de l'image php-apache-jean vers Docker Hub..."
+docker push "$DOCKER_USER/php-apache-jean:latest" &> /dev/null &  # Exécution en arrière-plan
 disown
-echo "L'envoi de l'image est en cours en arrière-plan..."
+echo "L'envoi des images simple-api-jean et php-apache-jean est en cours en arrière-plan..."

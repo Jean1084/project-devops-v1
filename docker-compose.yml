@@ -1,16 +1,18 @@
-version: '2'
+version: '3.8'  # Utilisation d'une version plus récente
+
 services:
-  web-simple-api-jean:
-    images: php:apache
+  web-php-apache-jean:
+    image: php-apache-jean:latest  # Correction de 'images' en 'image'
     depends_on:
-      - api
+      simple-api-jean:
+        condition: service_healthy  # Assure que l'API est prête avant de démarrer
     ports:
       - "8082:80"
     volumes:
-      - ./website:/var/www/html
+      - ./website/www:/var/www/html  # Monte tout le dossier au lieu d'un seul fichier
     environment:
-      - USERNAME=jean
-      - PASSWORD=agree
+      USERNAME: jean
+      PASSWORD: agree
     networks:
       - simple-api-network
 
@@ -22,6 +24,12 @@ services:
       - ./simple_api/student_age.json:/data/student_age.json
     networks:
       - simple-api-network
+    healthcheck:  # Vérifie que l'API Flask est bien démarrée
+      test: ["CMD", "curl", "-f", "http://localhost:4000/simple-jean/api/v1.0/get_student_ages"]
+      interval: 10s
+      retries: 5
+      start_period: 20s
 
 networks:
   simple-api-network:
+    driver: bridge

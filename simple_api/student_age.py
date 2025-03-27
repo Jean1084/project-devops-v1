@@ -1,55 +1,45 @@
-#!flask/bin/python
-from flask import Flask, jsonify
-from flask import abort
-from flask import make_response
-from flask import request
-from flask import url_for
+from flask import Flask, jsonify, abort, make_response, request
 from flask_httpauth import HTTPBasicAuth
-from flask import g, session, redirect, url_for
-from flask_simpleldap import LDAP
 import json
 import os
 
-auth = HTTPBasicAuth()
 app = Flask(__name__)
-app.debug = True
+auth = HTTPBasicAuth()
+
+# Définition des utilisateurs autorisés
+USERS = {
+    "jean": "agree"
+}
 
 @auth.get_password
 def get_password(username):
-    if username == 'jean':
-        return 'agree'
-    return None
+    return USERS.get(username)
 
 @auth.error_handler
 def unauthorized():
     return make_response(jsonify({'error': 'Unauthorized access'}), 401)
 
+# Définition du chemin du fichier JSON avec valeur par défaut
+student_age_file_path = os.getenv('STUDENT_AGE_FILE_PATH', '/data/student_age.json')
 
 try:
-    student_age_file_path
-    student_age_file_path  = os.environ['student_age_file_path'] 
-except NameError:
-    student_age_file_path  = '/data/student_age.json'
-
-student_age_file = open(student_age_file_path, "r")
-student_age = json.load(student_age_file)
+    with open(student_age_file_path, "r") as student_age_file:
+        student_age = json.load(student_age_file)
+except FileNotFoundError:
+    student_age = {}
 
 @app.route('/simple-jean/api/v1.0/get_student_ages', methods=['GET'])
 @auth.login_required
 def get_student_ages():
-    return jsonify({'student_ages': student_age })
+    return jsonify({'student_ages': student_age})
 
 @app.route('/simple-jean/api/v1.0/get_student_ages/<student_name>', methods=['GET'])
 @auth.login_required
 def get_student_age(student_name):
-    if student_name not in student_age :
+    if student_name not in student_age:
         abort(404)
-    if student_name in student_age :
-      age = student_age[student_name]
-      del student_age[student_name]
-      with open(student_age_file_path, 'w') as student_age_file:
-        json.dump(student_age, student_age_file, indent=4, ensure_ascii=False)
-    return age 
+    return jsonify({student_name: student_age[student_name]})
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)

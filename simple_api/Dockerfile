@@ -2,22 +2,27 @@ FROM debian:bullseye
 
 LABEL maintainer="Jean JOSEPH <josephjeanmardochee@gmail.com>"
 
-# Définit le dossier de travail
 WORKDIR /app
 
-# Copie le script Python
-COPY student_age.py .
+# Installation de Python et des dépendances en une seule couche
+RUN apt update -y && \
+    apt install -y python3 python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev
 
-# Copie le fichier des dépendances
+# Réduit la taille de l'image    
+RUN rm -rf /var/lib/apt/lists/*  
+
 COPY requirements.txt .
 
-# Installation de Python, pip et des dépendances système nécessaires
-RUN apt update -y && apt install -y python3 python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev
-
-# Installation des paquets Python définis dans requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 
+COPY student_age.py .
+
+# Définir un utilisateur non-root pour exécuter l'application
+# RUN useradd -m appuser
+# USER appuser
+
 VOLUME ["/data"]
+
 EXPOSE 5000
 
 CMD ["python3", "student_age.py"]
