@@ -65,6 +65,7 @@ docker build --no-cache -t php-apache-jean .
 sleep 2
 
 # Connexion à Docker Hub
+cd "$WORKSPACE_PROJECT"
 echo "Connexion à Docker Hub..."
 echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 sleep 2
@@ -95,6 +96,16 @@ wait  # Attendre la fin des pushs en arrière-plan
 docker rmi -f simple-api-jean "$DOCKER_USER/simple-api-jean" || true
 docker rmi -f php-apache-jean "$DOCKER_USER/php-apache-jean" || true
 docker image prune -f
+
+
+cd "$DIR_DOCKER_WEB_API" || exit
+echo "reconstruction de l'image Docker - php-apache-jean pour lancer docker-compose..."
+docker build -t php-apache-jean:latest .
+sleep 5
+cd "$DIR_DOCKER_SIMPLE_API" || exit
+echo "reconstruction de l'image Docker - simple-api-jean pour lancer docker-compose..."
+docker build -t simple-api-jean:latest .
+sleep 5
 
 cd "$WORKSPACE_PROJECT"
 docker-compose up -d --build

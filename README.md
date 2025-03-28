@@ -31,10 +31,23 @@
 * ### create image Docker
 * ### connect to Docker Hub
 * ### Push image on Docker Hub
-
-
-## To test the API
+* ### Run docker-compose
+#
+## Test the API in command line :
 ### curl -u jean:agree -X GET http://127.0.0.1:4000/simple-jean/api/v1.0/get_student_ages
 
 ### curl -u jean:agree -X GET http://localhost:4000/simple-jean/api/v1.0/get_student_ages
+
+### output :
+### {
+###  "student_ages": {
+###    "alice": "12", 
+###    "bob": "13"
+###  }
+### }
+
+## Test the API in a browser :
+
+### <ip_vm>:8082
+
 
