@@ -51,7 +51,7 @@
 ### <ip_vm>:8082 ==> no access data
 ### docker-compose ps in vm get <name_container_simple-api-jean>
 ### update file index.php
-### before ==> http://<api_ip_or_name:port>/simple-jean/api/v1.0/get_student_ages
-### after ==> http://<name_container_simple-api-jean>:5000/simple-jean/api/v1.0/get_student_ages
+### before ==> http://<name_container_simple-api-jean:port>/simple-jean/api/v1.0/get_student_ages
+### after ==> http://workspace-service-simple-api-jean-1:5000/simple-jean/api/v1.0/get_student_ages
 ### After that
 ### <ip_vm>:8082 ==> access data

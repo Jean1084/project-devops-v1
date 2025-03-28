@@ -12,8 +12,8 @@
         if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submit'])) {
             $username = getenv('USERNAME') ?: 'fake_username';
             $password = getenv('PASSWORD') ?: 'fake_password';
-            //$api_url = getenv('API_URL') ?: 'http://simple-api-jean:5000';
-            $api_url = getenv('API_URL') ?: 'http://<api_ip_or_name:port>';
+            //$api_url = getenv('API_URL') ?: 'http://<name_container_simple-api-jean:port>';
+            $api_url = getenv('API_URL') ?: 'http://workspace-service-simple-api-jean-1:5000';
 
             $context = stream_context_create([
                 "http" => [

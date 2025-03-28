@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Charger les variables d'environnement
 source .env
 
 # Chemin de la clé SSH
@@ -7,6 +7,23 @@ SSH_DIR="/home/vagrant/.ssh"
 SSH_KNOWN_HOSTS="/home/vagrant/.ssh/known_hosts"
 SSH_KEY_PATH="$SSH_DIR/id_rsa"
 SSH_PUB_KEY_PATH="$SSH_KEY_PATH.pub"
+SSH_KEY_TITLE="ssh_key_vm_vagrant"
+GITHUB_API_URL="https://api.github.com/user/keys"
+
+#Installer jq pourmanipuler le JSON
+sudo apt install jq
+
+# Vérifier si la clé SSH existe déjà sur GitHub et supprimer la cle ssh sur Github....
+echo "Vérification des clés SSH existantes sur GitHub..."
+KEY_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" $GITHUB_API_URL | jq -r ".[] | select(.title==\"$SSH_KEY_TITLE\") | .id")
+
+if [ -n "$KEY_ID" ]; then
+    echo "Une clé SSH avec le titre '$SSH_KEY_TITLE' existe déjà (ID: $KEY_ID). Suppression..."
+    curl -X DELETE -H "Authorization: token $GITHUB_TOKEN" "$GITHUB_API_URL/$KEY_ID"
+    echo "Clé supprimée avec succès."
+else
+    echo "Aucune clé existante avec ce titre sur GitHub."
+fi
 
 # Vérifier et créer le dossier .ssh si nécessaire
 if [ ! -d "$SSH_DIR" ]; then
@@ -50,7 +67,7 @@ echo "Ajout de la clé sur GitHub..."
 RESPONSE=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
     -H "Accept: application/vnd.github.v3+json" \
     https://api.github.com/user/keys \
-    -d "{\"title\":\"ssh_key_vm_docker_vagrant\", \"key\":\"$SSH_KEY_CONTENT\"}")
+    -d "{\"title\":\"$SSH_KEY_TITLE\", \"key\":\"$SSH_KEY_CONTENT\"}")
 
 # Vérifier si l'ajout a réussi
 if echo "$RESPONSE" | grep -q '"key":'; then
