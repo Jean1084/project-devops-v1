@@ -8,14 +8,15 @@ services:
     networks:
       - simple-api-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/simple-jean/api/v1.0/get_student_ages"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/simple-jean/api/v1.0/get_student_ages"]
       interval: 10s
       retries: 5
       start_period: 20s
+
   service-php-apache-jean:
-    image: php-apache-jean:latest
+    image: php-api-jean:latest
     depends_on:
-      simple-api-jean:
+      service-simple-api-jean:
         condition: service_healthy
     ports:
       - "8082:80"
@@ -30,3 +31,4 @@ services:
 networks:
   simple-api-network:
     driver: bridge
+

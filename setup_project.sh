@@ -1,5 +1,4 @@
 #!/bin/bash
-source .env
 
 # Charger les variables d'environnement
 if [ -f .env ]; then
@@ -89,11 +88,13 @@ docker tag php-apache-jean "$DOCKER_USER/php-apache-jean:latest"
 sleep 3
 echo "Envoi de l'image php-apache-jean vers Docker Hub..."
 docker push "$DOCKER_USER/php-apache-jean:latest" &> /dev/null &  # Exécution en arrière-plan
-disown
 
-docker rmi -f "$DOCKER_USER/simple-api-jean" || true
-docker rmi -f "$DOCKER_USER/php-apache-jean" || true
-docker image prune -f 
+wait  # Attendre la fin des pushs en arrière-plan
+
+# Nettoyage des images locales
+docker rmi -f simple-api-jean "$DOCKER_USER/simple-api-jean" || true
+docker rmi -f php-apache-jean "$DOCKER_USER/php-apache-jean" || true
+docker image prune -f
 
 cd "$WORKSPACE_PROJECT"
 docker-compose up -d --build
