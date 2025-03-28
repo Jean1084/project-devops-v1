@@ -108,6 +108,13 @@ docker build -t simple-api-jean:latest .
 sleep 5
 
 cd "$WORKSPACE_PROJECT"
+echo "Lancer docker-compose up ..."
 docker-compose up -d --build
 
 echo "L'envoi des images simple-api-jean et php-apache-jean est en cours en arrière-plan..."
+echo "**************************************************************************************************"
+echo "Faire 'vagrant ssh' pour se connecter"
+echo "**************************************************************************************************"
+echo "Pour tester 'curl -u jean:agree -X GET http://127.0.0.1:4000/simple-jean/api/v1.0/get_student_ages'"
+echo "**************************************************************************************************"
+echo "ou 'curl -u jean:agree -X GET http://localhost:4000/simple-jean/api/v1.0/get_student_ages'"

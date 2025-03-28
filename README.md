@@ -1,6 +1,6 @@
 
 
-# Project DevOps V1 
+# Project DevOps V1 | Docker & Docker-Compose
 
 ## Vagrant 2.4.1 - VirtualBox 7.0.16 - Ubuntu/focal64 (Vagrant Box)  
 
@@ -11,7 +11,7 @@
 
 ![Infrastructure of project](images/infrastructure.PNG)
 
-
+#
 ## Create file .env
 ### DOCKER_USER=XXXXXXXXXXXXX
 ### DOCKER_PASS=XXXXXXXXXXXXX
@@ -45,9 +45,13 @@
 ###    "bob": "13"
 ###  }
 ### }
+#
+## Test the API in a browser of the host :
 
-## Test the API in a browser :
-
-### <ip_vm>:8082
-
-
+### <ip_vm>:8082 ==> no access data
+### docker-compose ps in vm get <name_container_simple-api-jean>
+### update file index.php
+### before ==> http://<api_ip_or_name:port>/simple-jean/api/v1.0/get_student_ages
+### after ==> http://<name_container_simple-api-jean>:5000/simple-jean/api/v1.0/get_student_ages
+### After that
+### <ip_vm>:8082 ==> access data
