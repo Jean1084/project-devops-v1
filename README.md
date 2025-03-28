@@ -4,15 +4,15 @@
 
 ## Vagrant 2.4.1 - VirtualBox 7.0.16 - Ubuntu/focal64 (Vagrant Box)  
 
-<img src="img/tools-use.PNG" width="350" height="580">
+<img src="images/tools-use.PNG" width="350" height="580">
 
 #
 # Infrastructure Automation
 
-![Infrastructure of project](img/infrastructure.PNG)
+![Infrastructure of project](images/infrastructure.PNG)
 
 
-## Create folder .env
+## Create file .env
 ### DOCKER_USER=XXXXXXXXXXXXX
 ### DOCKER_PASS=XXXXXXXXXXXXX
 ### GITHUB_USER=Jean1084
