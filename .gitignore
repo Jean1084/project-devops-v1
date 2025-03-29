@@ -1,4 +1,4 @@
 .env
 .DS_Store
 .vagrant/
-rm_clean_script.sh
+script_rm_clean.sh
