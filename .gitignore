@@ -2,3 +2,6 @@
 .DS_Store
 .vagrant/
 script_rm_clean.sh
+setup_ project.sh
+install_tools.sh
+add_github_ssh.sh
