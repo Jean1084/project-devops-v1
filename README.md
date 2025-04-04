@@ -96,7 +96,7 @@ API Testing via Web Browser
 
 * * * * *
 
-Advanced: Secure Docker Registry Setup (https://jean1084.github.io/) (ex : Enable GitHub Pages in the repo settings => https://github.com/Jean1084/Jean1084.github.io )
+Advanced: Secure Docker Registry Setup (https://registry-jean.github.io/) (ex : Enable GitHub Pages in the repo settings => https://github.com/registry-jean/registry-jean.github.io.git )
 --------------------------------------
 
 Creating a **secure Docker registry** for **high-security enterprises** (e.g., banking, healthcare, defense) requires strong security measures. Below is a step-by-step guide:
@@ -105,7 +105,7 @@ Creating a **secure Docker registry** for **high-security enterprises** (e.g., b
 
 Ensure you have: ✅ A server (on-premise/cloud) with Linux (Ubuntu, CentOS, etc.)\
 ✅ Docker & Docker Compose installed\
-✅ A domain or subdomain (`https://jean1084.github.io/`)\
+✅ A domain or subdomain (`https://registry-jean.github.io/`)\
 ✅ SSL/TLS certificate (Let's Encrypt or enterprise CA)\
 ✅ Secure storage (S3, MinIO, NAS)\
 ✅ Secure authentication (LDAP, OAuth, Keycloak, etc.)
@@ -155,7 +155,7 @@ If using Let's Encrypt:
 
 ```
 sudo apt install certbot
-certbot certonly --standalone -d jean1084.github.io
+certbot certonly --standalone -d registry-jean.github.io
 ```
 
 Copy certificates to `/opt/docker-registry/certs/` and update `docker-compose.yml`.
@@ -189,10 +189,10 @@ sudo apt install fail2ban
 ```
 server {
     listen 443 ssl;
-    server_name jean1084.github.io;
+    server_name registry-jean.github.io;
 
-    ssl_certificate /etc/letsencrypt/live/jean1084.github.io//fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/jean1084.github.io/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/registry-jean.github.io//fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/registry-jean.github.io/privkey.pem;
 
     location / {
         proxy_pass http://localhost:5000/;
@@ -220,20 +220,20 @@ sudo systemctl restart nginx
 #### **Login to Registry**
 
 ```
-docker login jean1084.github.io
+docker login registry-jean.github.io
 ```
 
 #### **Push an Image**
 
 ```
-docker tag nginx jean1084.github.io/nginx:v1
-docker push jean1084.github.io/nginx:v1
+docker tag nginx registry-jean.github.io/nginx:v1
+docker push registry-jean.github.io/nginx:v1
 ```
 
 #### **Pull an Image**
 
 ```
-docker pull jean1084.github.io/nginx:v1
+docker pull registry-jean.github.io/nginx:v1
 ```
 
 * * * * *
