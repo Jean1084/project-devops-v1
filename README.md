@@ -96,7 +96,7 @@ API Testing via Web Browser
 
 * * * * *
 
-Advanced: Secure Docker Registry Setup (https://registry-jean.github.io/) (ex : Enable GitHub Pages in the repo settings => https://github.com/registry-jean/registry-jean.github.io)
+Advanced: Secure Docker Registry Setup [GitHub Pages](https://registry-jean.github.io) - [GitHub Repo](https://github.com/registry-jean/registry-jean.github.io)
 --------------------------------------
 
 Creating a **secure Docker registry** for **high-security enterprises** (e.g., banking, healthcare, defense) requires strong security measures. Below is a step-by-step guide:
